@@ -2,6 +2,7 @@
 
 A one-page portfolio styled as an F1 race weekend: a start grid on a real race photo, a race-programme driver bio, projects as Grand Prix results, the stack as a car setup sheet, and contact as team radio.
 
+visit the website: https://mengheng-chi.vercel.app
 ## Run it
 
 ```bash
