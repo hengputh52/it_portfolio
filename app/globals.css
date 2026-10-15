@@ -1,0 +1,269 @@
+@import "tailwindcss";
+
+/* Concept: a race weekend. The page is a pit wall: start grid (hero), driver
+   programme (about), race results (projects), car setup (stack), team radio
+   (contact). Dark carbon by default, sun-bleached desert for the programme page. */
+:root {
+  --black:      #0A0A0B;  /* racing black            */
+  --carbon:     #141518;  /* carbon fibre charcoal    */
+  --carbon-2:   #1C1D21;
+  --carbon-3:   #26282D;
+  --concrete:   #8C9096;  /* pit-lane concrete        */
+  --concrete-2: #5A5E64;
+  --paddock:    #F3F2EE;  /* paddock white            */
+  --red:        #E10600;  /* signal red               */
+  --papaya:     #FF8000;  /* papaya orange            */
+  --green:      #1F9E78;  /* racing green, lifted for dark backgrounds */
+  --green-deep: #00594F;
+  --blue:       #2D7BFF;  /* electric blue            */
+  --amber:      #FFB020;  /* warm asphalt amber       */
+  --chrome:     #C9CDD3;  /* trophy chrome            */
+  --purple:     #B44DFF;  /* timing screens: fastest  */
+  --sand:       #E7D6B8;  /* Bahrain, sun-bleached    */
+  --sand-2:     #D6BF97;
+  --sand-ink:   #1D1A16;
+
+  --gold:   #E9C46A;
+  --silver: #C9CDD3;
+  --bronze: #C98A55;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-black:      var(--black);
+  --color-carbon:     var(--carbon);
+  --color-carbon-2:   var(--carbon-2);
+  --color-carbon-3:   var(--carbon-3);
+  --color-concrete:   var(--concrete);
+  --color-concrete-2: var(--concrete-2);
+  --color-paddock:    var(--paddock);
+  --color-red:        var(--red);
+  --color-papaya:     var(--papaya);
+  --color-green:      var(--green);
+  --color-green-deep: var(--green-deep);
+  --color-blue:       var(--blue);
+  --color-amber:      var(--amber);
+  --color-chrome:     var(--chrome);
+  --color-purple:     var(--purple);
+  --color-sand:       var(--sand);
+  --color-sand-2:     var(--sand-2);
+  --color-sand-ink:   var(--sand-ink);
+  --color-gold:       var(--gold);
+  --color-silver:     var(--silver);
+  --color-bronze:     var(--bronze);
+
+  /* Archivo has a width axis: expanded for the big motorsport display type,
+     condensed for labels. Inter for body, JetBrains Mono for telemetry. */
+  --font-display: var(--font-archivo), "Archivo", system-ui, sans-serif;
+  --font-sans:    var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-mono:    var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Fast and exact: short, sharp transitions */
+@theme {
+  --default-transition-duration: 180ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  body {
+    background-color: var(--black);
+    color: var(--paddock);
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  ::selection { background: var(--papaya); color: var(--black); }
+  *:focus-visible { outline: 2px solid var(--papaya); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ---------- texture tiles (inline SVG noise, no image files) ---------- */
+:root {
+  --tex-grit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+/* ---------- keyframes ---------- */
+@keyframes speed {
+  from { background-position: 0 0; }
+  to   { background-position: -600px 0; }
+}
+/* motion blur on hover: a hard horizontal smear that settles, like a car passing */
+@keyframes pass {
+  0%   { filter: url(#mblur-3); transform: translateX(-10px) skewX(-4deg); }
+  30%  { filter: url(#mblur-2); transform: translateX(4px) skewX(-1deg); }
+  60%  { filter: url(#mblur-1); transform: translateX(0); }
+  100% { filter: none; transform: none; }
+}
+@keyframes sweep {
+  from { transform: translateX(-120%) skewX(-20deg); }
+  to   { transform: translateX(260%) skewX(-20deg); }
+}
+/* camera flash: a photographer catches the car at the apex */
+@keyframes flash {
+  0%   { opacity: 0; }
+  6%   { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.25; }
+}
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+@keyframes glint {
+  0%, 82% { transform: translateX(-150%) skewX(-20deg); }
+  100%    { transform: translateX(250%) skewX(-20deg); }
+}
+
+@layer utilities {
+  .page {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 5vw, 3rem);
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Display type: Archivo, extended and heavy */
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    line-height: 0.88;
+  }
+  /* Labels: Archivo condensed */
+  .label {
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  /* Big numbers with a small unit beside them */
+  .num {
+    font-family: var(--font-display);
+    font-stretch: 100%;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .unit {
+    font-family: var(--font-mono);
+    font-size: 0.4em;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-left: 0.2em;
+    opacity: 0.7;
+  }
+
+  /* ---------- surfaces ---------- */
+
+  /* Sun-bleached desert paper, for the race programme */
+  .desert {
+    background-color: var(--sand);
+    background-image:
+      radial-gradient(ellipse 60% 50% at 100% 0%, rgb(255 255 255 / 0.45), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 0% 100%, rgb(180 130 70 / 0.18), transparent 70%),
+      var(--tex-grit);
+    background-size: 100% 100%, 100% 100%, 160px 160px;
+    color: var(--sand-ink);
+  }
+
+  /* Checkered flag */
+  .checker {
+    background: conic-gradient(var(--paddock) 25%, var(--black) 0 50%, var(--paddock) 0 75%, var(--black) 0) 0 0 / var(--sq, 16px) var(--sq, 16px);
+  }
+
+  /* Speed lines: thin horizontal streaks that rush right-to-left */
+  .speedlines {
+    background-image:
+      repeating-linear-gradient(180deg, transparent 0 13px, rgb(255 255 255 / 0.06) 13px 14px, transparent 14px 31px, rgb(255 255 255 / 0.035) 31px 32px, transparent 32px 47px),
+      linear-gradient(90deg, transparent, rgb(255 255 255 / 0.04) 40%, transparent 41%, transparent 70%, rgb(255 255 255 / 0.03) 71%, transparent 72%);
+    background-size: 100% 100%, 600px 100%;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+    animation: speed 0.9s linear infinite;
+  }
+
+  /* ---------- hover effects ---------- */
+
+  /* Motion blur on hover (filters live in <MotionBlurDefs/>) */
+  .mblur-hover:hover .mblur-target,
+  .mblur-hover:focus-visible .mblur-target { animation: pass 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 1; }
+
+  /* A light streak sweeps across on hover */
+  .sweep { position: relative; overflow: hidden; }
+  .sweep::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  .sweep:hover::after { animation: sweep 0.6s ease-out 1; }
+
+  /* Checkered hover state: a checker band slides in under the element */
+  .checker-hover { position: relative; }
+  .checker-hover::before {
+    content: "";
+    position: absolute;
+    inset: auto 0 -6px 0;
+    height: 4px;
+    --sq: 4px;
+    background: conic-gradient(var(--paddock) 25%, var(--black) 0 50%, var(--paddock) 0 75%, var(--black) 0) 0 0 / 8px 8px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .checker-hover:hover::before,
+  .checker-hover[aria-current="true"]::before { transform: scaleX(1); }
+
+  /* Camera flash overlay, triggered by adding .is-flashed */
+  .flash-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 60% 40%, #fff, rgb(255 255 255 / 0.6) 40%, rgb(255 255 255 / 0.15));
+    opacity: 0;
+    z-index: 5;
+  }
+  .is-flashed .flash-layer { animation: flash 0.55s ease-out 1; }
+
+
+  /* Chrome glint on podium badges */
+  .glint { position: relative; overflow: hidden; }
+  .glint::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 50%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+    animation: glint 4s ease-in-out infinite;
+  }
+
+  .blink { animation: blink 1s steps(1) infinite; }
+  .wave-bar { transform-origin: 50% 100%; animation: wave 0.9s ease-in-out infinite; }
+  .wave-paused .wave-bar { animation-play-state: paused; transform: scaleY(0.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speedlines, .glint::after, .blink, .wave-bar { animation: none !important; }
+}
